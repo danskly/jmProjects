@@ -75,15 +75,10 @@ class module2 {
     }
 
     public static void moveRobot(Robot robot, int toX, int toY) {
-//        for (int i = 0; i < Direction.values().length - 1; i++) {
-//            if (robot.getDirection() != Direction.UP) {
-//                robot.turnRight();
-//            }
-//        }
-        Direction Direct = robot.getDirection();
-        while (Direct != Direction.UP) {
+        Direction direct = robot.getDirection();
+        while (direct != Direction.UP) {
             robot.turnRight();
-            Direct = robot.getDirection();
+            direct = robot.getDirection();
         }
         if (robot.getX() - toX > 0) {
             robot.turnLeft();
@@ -96,10 +91,10 @@ class module2 {
                 robot.stepForward();
             }
         }
-        for (int i = 0; i < Direction.values().length - 1; i++) {
-            if (robot.getDirection() != Direction.UP) {
-                robot.turnRight();
-            }
+        direct = robot.getDirection();
+        while (direct != Direction.UP) {
+            robot.turnRight();
+            direct = robot.getDirection();
         }
         if (robot.getY() - toY > 0) {
             robot.turnLeft();
