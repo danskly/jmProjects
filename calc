@@ -1,0 +1,143 @@
+import java.util.*;
+
+class Main {
+
+    // Основной метод калькулятора
+    public static String calc(String inputString) {
+        // Убираем лишние пробелы
+        inputString = inputString.trim();
+
+        // Проверяем на количество операторов
+        if (inputString.split(" ").length != 3) {
+            throw new IllegalArgumentException("Строка должна содержать два числа и один оператор");
+        }
+
+        // Разделяем строку на части
+        String[] parts = inputString.split(" ");
+        String firstOperand = parts[0];
+        String operator = parts[1];
+        String secondOperand = parts[2];
+
+        // Проверяем, что оба операнда либо арабские, либо римские
+        boolean isRoman = isRoman(firstOperand) && isRoman(secondOperand);
+        boolean isArabic = isArabic(firstOperand) && isArabic(secondOperand);
+
+        if (!isRoman && !isArabic) {
+            throw new IllegalArgumentException("Числа должны быть либо арабскими, либо римскими, но не смешанными");
+        }
+
+        // Для арабских чисел
+        if (isArabic) {
+            int a = Integer.parseInt(firstOperand);
+            int b = Integer.parseInt(secondOperand);
+
+            // Проверяем, что числа в пределах от 1 до 10
+            if (a < 1 || a > 10 || b < 1 || b > 10) {
+                throw new IllegalArgumentException("Числа должны быть в пределах от 1 до 10");
+            }
+
+            int result = performOperation(a, b, operator);
+
+            return String.valueOf(result);
+        }
+
+        // Для римских чисел
+        if (isRoman) {
+            int a = romanToArabic(firstOperand);
+            int b = romanToArabic(secondOperand);
+
+            // Проверяем, что числа в пределах от 1 до 10
+            if (a < 1 || a > 10 || b < 1 || b > 10) {
+                throw new IllegalArgumentException("Числа должны быть в пределах от I до X");
+            }
+
+            int result = performOperation(a, b, operator);
+
+            if (result < 1) {
+                throw new IllegalArgumentException("Римские числа не могут быть меньше 1");
+            }
+
+            return arabicToRoman(result);
+        }
+
+        throw new IllegalArgumentException("Неизвестный формат чисел");
+    }
+
+    // Метод для выполнения арифметических операций
+    private static int performOperation(int a, int b, String operator) {
+        switch (operator) {
+            case "+":
+                return a + b;
+            case "-":
+                return a - b;
+            case "*":
+                return a * b;
+            case "/":
+                if (b == 0) {
+                    throw new ArithmeticException("Деление на ноль невозможно");
+                }
+                return a / b;
+            default:
+                throw new IllegalArgumentException("Неизвестный оператор");
+        }
+    }
+
+    // Проверка на арабское число
+    private static boolean isArabic(String str) {
+        try {
+            int num = Integer.parseInt(str);
+            return num >= 1 && num <= 10;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    // Проверка на римское число
+    private static boolean isRoman(String str) {
+        return str.matches("I|II|III|IV|V|VI|VII|VIII|IX|X");
+    }
+
+    // Перевод римского числа в арабское
+    private static int romanToArabic(String roman) {
+        switch (roman) {
+            case "I": return 1;
+            case "II": return 2;
+            case "III": return 3;
+            case "IV": return 4;
+            case "V": return 5;
+            case "VI": return 6;
+            case "VII": return 7;
+            case "VIII": return 8;
+            case "IX": return 9;
+            case "X": return 10;
+            default: throw new IllegalArgumentException("Неверное римское число");
+        }
+    }
+
+    // Перевод арабского числа в римское
+    private static String arabicToRoman(int number) {
+        if (number == 1) return "I";
+        if (number == 2) return "II";
+        if (number == 3) return "III";
+        if (number == 4) return "IV";
+        if (number == 5) return "V";
+        if (number == 6) return "VI";
+        if (number == 7) return "VII";
+        if (number == 8) return "VIII";
+        if (number == 9) return "IX";
+        if (number == 10) return "X";
+        throw new IllegalArgumentException("Римские числа поддерживают только числа от 1 до 10");
+    }
+
+    public static void main(String[] args) {
+        // Пример работы калькулятора
+        try {
+            System.out.println(calc("1 + 2")); // 3
+            System.out.println(calc("VI / III")); // II
+            System.out.println(calc("I - II")); // исключение
+            System.out.println(calc("1 + 2 + 3")); // исключение
+        } catch (Exception e) {
+            System.out.println("Ошибка: " + e.getMessage());
+        }
+    }
+}
